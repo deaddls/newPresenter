@@ -4,13 +4,15 @@ Simuliert ein kaputtes VGA-Kabel bzw. einen zickenden Beamer: Bluescreen, „Kei
 
 ## Download
 
-Fertige Apps (Intel und Apple Silicon, ab macOS 13) liegen in `dist/`: `VGAGlitch.zip` und `VGAGlitch2.zip`. Entpacken und nach `/Programme` ziehen.
-
-Die Apps sind nicht von Apple notarisiert, deshalb blockiert macOS den ersten Start. Entweder Rechtsklick auf die App → **Öffnen** → **Öffnen**, oder im Terminal:
+Im Terminal einfügen, fertig (installiert VGAGlitch und VGAGlitch2 nach /Programme):
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/VGAGlitch2.app
+curl -fsSL https://raw.githubusercontent.com/deaddls/newPresenter/main/install.sh | bash
 ```
+
+Oder per Hand: [VGAGlitch2.zip](https://github.com/deaddls/newPresenter/releases/latest/download/VGAGlitch2.zip) · [VGAGlitch.zip](https://github.com/deaddls/newPresenter/releases/latest/download/VGAGlitch.zip) laden, entpacken, nach Programme ziehen. Weil die Apps nicht von Apple notarisiert sind, blockiert macOS den ersten Start: auf „Fertig“ klicken, dann **Systemeinstellungen → Datenschutz & Sicherheit**, ganz nach unten scrollen, **„Dennoch öffnen“**. Läuft auf Intel und Apple Silicon ab macOS 13.
+
+Neue Version veröffentlichen (baut beide Apps und lädt sie hoch): `./release.sh 1.1`
 
 ## Bauen
 
