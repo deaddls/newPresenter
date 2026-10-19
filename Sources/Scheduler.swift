@@ -131,4 +131,20 @@ enum Settings {
         get { d.bool(forKey: "hideIcon") }
         set { d.set(newValue, forKey: "hideIcon") }
     }
+
+#if VGAGLITCH2
+    /// false = nur Beamer, true = Laptop-Bildschirm und Beamer
+    static var allScreens: Bool {
+        get { d.bool(forKey: "allScreens") }
+        set { d.set(newValue, forKey: "allScreens") }
+    }
+
+    /// The "Bargeld abschaffen?" poll pops up at random while running.
+    static var pollEnabled: Bool {
+        get { d.object(forKey: "pollEnabled") as? Bool ?? true }
+        set { d.set(newValue, forKey: "pollEnabled") }
+    }
+#else
+    static let allScreens = false
+#endif
 }

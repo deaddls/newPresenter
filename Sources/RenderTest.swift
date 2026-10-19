@@ -90,6 +90,19 @@ enum RenderTest {
             }
             if let img = c.makeImage() { save(img, to: dir.appendingPathComponent("osd.png")) }
         }
+#if VGAGLITCH2
+        // The poll at the size and place it gets on a 1280 × 800 screen.
+        if let c = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                             space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                             bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue),
+           let poll = PollPopup.snapshot(width: max(300, CGFloat(w) * 0.26)) {
+            // The snapshot has the main screen's backing scale; draw it at its point size.
+            let pw = max(300, CGFloat(w) * 0.26), ph = pw * CGFloat(poll.height) / CGFloat(poll.width), margin = pw * 0.05
+            c.draw(slide, in: CGRect(x: 0, y: 0, width: w, height: h))
+            c.draw(poll, in: CGRect(x: CGFloat(w) - pw - margin, y: CGFloat(h) - ph - margin, width: pw, height: ph))
+            if let img = c.makeImage() { save(img, to: dir.appendingPathComponent("poll.png")) }
+        }
+#endif
         print("wrote previews to \(dir.path)")
         return true
     }

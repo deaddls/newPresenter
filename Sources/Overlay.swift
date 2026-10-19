@@ -205,6 +205,9 @@ final class ScreenOverlay {
 final class GlitchController {
     private(set) var running = false
     private var overlays: [CGDirectDisplayID: ScreenOverlay] = [:]
+#if VGAGLITCH2
+    private(set) lazy var poll = PollController { [unowned self] in self.targetScreens() }
+#endif
 
     init() {
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
@@ -217,11 +220,17 @@ final class GlitchController {
         guard !running else { return }
         running = true
         syncScreens()
+#if VGAGLITCH2
+        poll.start()
+#endif
     }
 
     func stop() {
         guard running else { return }
         running = false
+#if VGAGLITCH2
+        poll.stop()
+#endif
         overlays.values.forEach { $0.stop() }
         overlays.removeAll()
     }
@@ -248,12 +257,13 @@ final class GlitchController {
         }
     }
 
-    /// Only projectors / external displays, never the built-in screen on its own.
-    private func targetScreens() -> [CGDirectDisplayID: NSScreen] {
+    /// Only projectors / external displays, never the built-in screen on its own
+    /// (unless `Settings.allScreens` is on).
+    func targetScreens() -> [CGDirectDisplayID: NSScreen] {
         var result: [CGDirectDisplayID: NSScreen] = [:]
         for screen in NSScreen.screens {
             guard let id = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID,
-                  reachesExternalDisplay(id) else { continue }
+                  Settings.allScreens || reachesExternalDisplay(id) else { continue }
             result[id] = screen
         }
         return result

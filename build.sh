@@ -1,21 +1,39 @@
 #!/bin/bash
-# Builds build/VGAGlitch.app. Optional: SIGN_IDENTITY="Apple Development: …" ./build.sh
+# Builds build/VGAGlitch.app and build/VGAGlitch2.app (glitches plus the Bargeld poll).
+# Optional: SIGN_IDENTITY="Apple Development: …" ./build.sh
 # (a stable signature keeps the screen recording permission across rebuilds).
 set -euo pipefail
 cd "$(dirname "$0")"
 
-APP=build/VGAGlitch.app
 ARCH=$(uname -m)
 mkdir -p build/module-cache
-rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp Info.plist "$APP/Contents/Info.plist"
 
-swiftc -O -swift-version 5 \
-    -target "$ARCH-apple-macos13.0" \
-    -module-cache-path build/module-cache \
-    Sources/*.swift \
-    -o "$APP/Contents/MacOS/VGAGlitch"
+# build_app <name> <bundle id> [swiftc flags …]
+build_app() {
+    local name=$1 id=$2
+    shift 2
+    local app=build/$name.app
+    rm -rf "$app"
+    mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
+    cp Info.plist "$app/Contents/Info.plist"
+    for key in CFBundleExecutable CFBundleName CFBundleDisplayName; do
+        plutil -replace "$key" -string "$name" "$app/Contents/Info.plist"
+    done
+    plutil -replace CFBundleIdentifier -string "$id" "$app/Contents/Info.plist"
 
-codesign --force --sign "${SIGN_IDENTITY:--}" "$APP"
-echo "Fertig: $APP"
+    swiftc -O -swift-version 5 \
+        -target "$ARCH-apple-macos13.0" \
+        -module-cache-path build/module-cache \
+        "$@" \
+        Sources/*.swift \
+        -o "$app/Contents/MacOS/$name"
+}
+
+build_app VGAGlitch local.vgaglitch
+build_app VGAGlitch2 local.vgaglitch2 -D VGAGLITCH2
+cp Resources/stuetzle.png build/VGAGlitch2.app/Contents/Resources/
+
+for app in build/VGAGlitch.app build/VGAGlitch2.app; do
+    codesign --force --sign "${SIGN_IDENTITY:--}" "$app"
+done
+echo "Fertig: build/VGAGlitch.app, build/VGAGlitch2.app"

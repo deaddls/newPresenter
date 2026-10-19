@@ -8,7 +8,17 @@ Simuliert ein kaputtes VGA-Kabel bzw. einen zickenden Beamer: Bluescreen, „Kei
 ./build.sh
 ```
 
-Ergebnis: `build/VGAGlitch.app`. Am besten nach `/Programme` ziehen und von dort starten.
+Ergebnis: `build/VGAGlitch.app` und `build/VGAGlitch2.app`. Am besten nach `/Programme` ziehen und von dort starten.
+
+## VGAGlitch2
+
+Wie VGAGlitch, plus:
+
+- **Bildschirme** (Menü): „Nur Beamer“ oder „Laptop + Beamer“. Mit „Laptop + Beamer“ glitcht auch der eingebaute Bildschirm, auch ganz ohne Beamer.
+- **Bargeld-Umfrage**: Solange die Störungen laufen, poppt oben rechts ab und zu Hansjörg Stützle mit „BARGELD ABSCHAFFEN?“ auf. Die Buttons sind klickbar (die Präsentation behält dabei den Fokus): „NEIN …“ bedankt sich und verschwindet, „JA …“ ist die falsche Antwort. Ohne Klick verschwindet sie nach 8–14 s von selbst. Wie oft sie kommt, hängt an der Intensität.
+- **⌃⌥⌘B**: Umfrage sofort zeigen. Im Menü lässt sich das zufällige Einblenden abschalten.
+
+Beide Apps nutzen ⌃⌥⌘G, also immer nur eine davon laufen lassen. Die Bildschirmaufnahme-Berechtigung braucht VGAGlitch2 separat (`tccutil reset ScreenCapture local.vgaglitch2`).
 
 ## Bedienung
 
@@ -57,4 +67,4 @@ build/VGAGlitch.app/Contents/MacOS/VGAGlitch --start
 VGAGLITCH_DEBUG=1 build/VGAGlitch.app/Contents/MacOS/VGAGlitch --smoke 10
 ```
 
-Aufbau: `Sources/Effects.swift` (Effekte und Episoden), `Scheduler.swift` (Zufall und Timing), `Shader.swift` (Metal-Shader), `ScreenCapturer.swift` (ScreenCaptureKit), `Overlay.swift` (Fenster je Bildschirm), `AppDelegate.swift` (Tastenkürzel und Menü).
+Aufbau: `Sources/Poll.swift` (Bargeld-Umfrage, nur in VGAGlitch2 via `-D VGAGLITCH2`), `Sources/Effects.swift` (Effekte und Episoden), `Scheduler.swift` (Zufall und Timing), `Shader.swift` (Metal-Shader), `ScreenCapturer.swift` (ScreenCaptureKit), `Overlay.swift` (Fenster je Bildschirm), `AppDelegate.swift` (Tastenkürzel und Menü).
