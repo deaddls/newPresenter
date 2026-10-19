@@ -2,6 +2,16 @@
 
 Simuliert ein kaputtes VGA-Kabel bzw. einen zickenden Beamer: Bluescreen, „Kein Signal“, zerreißendes und rollendes Bild, fehlende Farbkanäle, Geisterbilder, weiße Störstreifen und Funkeln. Welcher Effekt kommt und wann, ist jedes Mal zufällig.
 
+## Download
+
+Fertige Apps (Intel und Apple Silicon, ab macOS 13) liegen in `dist/`: `VGAGlitch.zip` und `VGAGlitch2.zip`. Entpacken und nach `/Programme` ziehen.
+
+Die Apps sind nicht von Apple notarisiert, deshalb blockiert macOS den ersten Start. Entweder Rechtsklick auf die App → **Öffnen** → **Öffnen**, oder im Terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/VGAGlitch2.app
+```
+
 ## Bauen
 
 ```bash

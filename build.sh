@@ -5,7 +5,6 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-ARCH=$(uname -m)
 mkdir -p build/module-cache
 
 # build_app <name> <bundle id> [swiftc flags …]
@@ -21,12 +20,17 @@ build_app() {
     done
     plutil -replace CFBundleIdentifier -string "$id" "$app/Contents/Info.plist"
 
-    swiftc -O -swift-version 5 \
-        -target "$ARCH-apple-macos13.0" \
-        -module-cache-path build/module-cache \
-        "$@" \
-        Sources/*.swift \
-        -o "$app/Contents/MacOS/$name"
+    # Universal binary, so the app runs natively on Intel and Apple Silicon.
+    for arch in x86_64 arm64; do
+        swiftc -O -swift-version 5 \
+            -target "$arch-apple-macos13.0" \
+            -module-cache-path build/module-cache \
+            "$@" \
+            Sources/*.swift \
+            -o "build/$name-$arch"
+    done
+    lipo -create "build/$name-x86_64" "build/$name-arm64" -output "$app/Contents/MacOS/$name"
+    rm "build/$name-x86_64" "build/$name-arm64"
 }
 
 build_app VGAGlitch local.vgaglitch
