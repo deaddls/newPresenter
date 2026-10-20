@@ -108,13 +108,13 @@ enum Settings {
         return Swift.max(0, Swift.min(max, v))
     }
 
-    /// 0 = leicht, 1 = mittel, 2 = heftig
+    /// 0 = sehr leicht, 1 = leicht, 2 = mittel, 3 = heftig
     static var intensity: Int {
-        get { int("intensity", 1, max: 2) }
-        set { d.set(newValue, forKey: "intensity") }
+        get { int("level", 2, max: 3) }
+        set { d.set(newValue, forKey: "level") }
     }
-    static var intensityFactor: Float { [0.65, 1.0, 1.3][intensity] }
-    static var gapFactor: Double { [2.2, 1.0, 0.45][intensity] }
+    static var intensityFactor: Float { [0.45, 0.65, 1.0, 1.3][intensity] }
+    static var gapFactor: Double { [4.0, 2.2, 1.0, 0.45][intensity] }
 
     /// 0 = Deutsch, 1 = English, 2 = aus
     static var osdLanguage: Int {
@@ -132,7 +132,6 @@ enum Settings {
         set { d.set(newValue, forKey: "hideIcon") }
     }
 
-#if VGAGLITCH2
     /// false = nur Beamer, true = Laptop-Bildschirm und Beamer
     static var allScreens: Bool {
         get { d.bool(forKey: "allScreens") }
@@ -144,7 +143,4 @@ enum Settings {
         get { d.object(forKey: "pollEnabled") as? Bool ?? true }
         set { d.set(newValue, forKey: "pollEnabled") }
     }
-#else
-    static let allScreens = false
-#endif
 }

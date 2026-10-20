@@ -256,7 +256,7 @@ enum Episode: String, CaseIterable {
         case .misaligned: base = 4
         }
         guard isHeavy else { return base }
-        return base * [0.4, 1.0, 1.5][max(0, min(2, level))]
+        return base * [0.15, 0.4, 1.0, 1.5][max(0, min(3, level))]
     }
 
     func build(at t0: Double, k: Float, hasFrame: Bool) -> [Effect] {

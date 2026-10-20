@@ -90,7 +90,6 @@ enum RenderTest {
             }
             if let img = c.makeImage() { save(img, to: dir.appendingPathComponent("osd.png")) }
         }
-#if VGAGLITCH2
         // The poll at the size and place it gets on a 1280 × 800 screen.
         if let c = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
                              space: CGColorSpace(name: CGColorSpace.sRGB)!,
@@ -102,7 +101,6 @@ enum RenderTest {
             c.draw(poll, in: CGRect(x: CGFloat(w) - pw - margin, y: CGFloat(h) - ph - margin, width: pw, height: ph))
             if let img = c.makeImage() { save(img, to: dir.appendingPathComponent("poll.png")) }
         }
-#endif
         print("wrote previews to \(dir.path)")
         return true
     }

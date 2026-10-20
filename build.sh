@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds build/VGAGlitch.app and build/VGAGlitch2.app (glitches plus the Bargeld poll).
+# Builds build/VGAGlitch.app.
 # Optional: SIGN_IDENTITY="Apple Development: …" ./build.sh
 # (a stable signature keeps the screen recording permission across rebuilds).
 set -euo pipefail
@@ -34,10 +34,7 @@ build_app() {
 }
 
 build_app VGAGlitch local.vgaglitch
-build_app VGAGlitch2 local.vgaglitch2 -D VGAGLITCH2
-cp Resources/stuetzle.png build/VGAGlitch2.app/Contents/Resources/
+cp Resources/stuetzle.png build/VGAGlitch.app/Contents/Resources/
 
-for app in build/VGAGlitch.app build/VGAGlitch2.app; do
-    codesign --force --sign "${SIGN_IDENTITY:--}" "$app"
-done
-echo "Fertig: build/VGAGlitch.app, build/VGAGlitch2.app"
+codesign --force --sign "${SIGN_IDENTITY:--}" build/VGAGlitch.app
+echo "Fertig: build/VGAGlitch.app"

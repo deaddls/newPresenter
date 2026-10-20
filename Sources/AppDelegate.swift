@@ -5,16 +5,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let controller = GlitchController()
     private var statusItem: NSStatusItem?
     private var hotKey: HotKey?
-#if VGAGLITCH2
     private var pollHotKey: HotKey?
-    private static let title = "VGA Glitch 2"
-    private static let appName = "VGAGlitch2"
-    private static let symbol = "banknote"
-#else
-    private static let title = "VGA Glitch"
-    private static let appName = "VGAGlitch"
-    private static let symbol = "display"
-#endif
 
     // hold-to-stop state
     private var pressBegan: Double?
@@ -33,10 +24,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             alert("Tastenkürzel ⌃⌥⌘G ist schon belegt",
                   "Eine andere App nutzt diese Kombination. Starten/Stoppen geht weiterhin über das Menüleisten-Symbol.")
         }
-#if VGAGLITCH2
         pollHotKey = HotKey(keyCode: kVK_ANSI_B, modifiers: controlKey | optionKey | cmdKey, id: 2)
         pollHotKey?.onPress = { [weak self] in self?.controller.poll.show() }
-#endif
 
         let args = CommandLine.arguments
         // --smoke <seconds>: start, run briefly, quit (for testing; never prompts)
@@ -107,7 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func showStatusItem() {
         guard statusItem == nil else { return }
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        item.button?.image = NSImage(systemSymbolName: Self.symbol, accessibilityDescription: Self.title)
+        item.button?.image = NSImage(systemSymbolName: "display", accessibilityDescription: "VGA Glitch")
         item.button?.image?.isTemplate = true
         let menu = NSMenu()
         menu.delegate = self
@@ -119,7 +108,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.removeAllItems()
         let running = controller.running
 
-        let header = NSMenuItem(title: running ? "\(Self.title) – aktiv" : "\(Self.title) – aus", action: nil, keyEquivalent: "")
+        let header = NSMenuItem(title: running ? "VGA Glitch – aktiv" : "VGA Glitch – aus", action: nil, keyEquivalent: "")
         header.isEnabled = false
         menu.addItem(header)
         menu.addItem(item(running ? "Stoppen" : "Starten", #selector(toggle)))
@@ -130,7 +119,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let hint = NSMenuItem(title: "⌃⌥⌘G = Start · 3 s halten = Stopp", action: nil, keyEquivalent: "")
         hint.isEnabled = false
         menu.addItem(hint)
-#if VGAGLITCH2
         menu.addItem(.separator())
         menu.addItem(submenu("Bildschirme", ["Nur Beamer", "Laptop + Beamer"],
                              selected: Settings.allScreens ? 1 : 0, #selector(setScreens(_:))))
@@ -138,14 +126,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         poll.state = Settings.pollEnabled ? .on : .off
         menu.addItem(poll)
         menu.addItem(item("Umfrage jetzt zeigen (⌃⌥⌘B)", #selector(showPoll)))
-#else
-        let target = NSMenuItem(title: "Wirkt nur auf Beamer / externe Bildschirme", action: nil, keyEquivalent: "")
-        target.isEnabled = false
-        menu.addItem(target)
-#endif
         menu.addItem(.separator())
 
-        menu.addItem(submenu("Intensität", ["Leicht", "Mittel", "Heftig"], selected: Settings.intensity, #selector(setIntensity(_:))))
+        menu.addItem(submenu("Intensität", ["Sehr leicht", "Leicht", "Mittel", "Heftig"], selected: Settings.intensity, #selector(setIntensity(_:))))
         menu.addItem(submenu("„Kein Signal“-Meldung", ["Deutsch", "English", "Aus"],
                              selected: Settings.osdLanguage, #selector(setOSD(_:))))
         let short = item("Kurz drücken stoppt sofort", #selector(toggleShortPress))
@@ -197,7 +180,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func toggleShortPress() { Settings.shortPressStops.toggle() }
 
-#if VGAGLITCH2
     @objc private func setScreens(_ sender: NSMenuItem) {
         Settings.allScreens = sender.tag == 1
         controller.syncScreens()
@@ -206,7 +188,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func togglePoll() { Settings.pollEnabled.toggle() }
 
     @objc private func showPoll() { controller.poll.show() }
-#endif
 
     @objc private func openPrivacySettings() {
         CGRequestScreenCaptureAccess()
@@ -217,7 +198,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func hideIcon() {
         alert("Menüleisten-Symbol wird ausgeblendet",
-              "Die App läuft weiter und reagiert auf ⌃⌥⌘G. Um das Symbol zurückzuholen, öffne \(Self.appName) einfach noch einmal.")
+              "Die App läuft weiter und reagiert auf ⌃⌥⌘G. Um das Symbol zurückzuholen, öffne VGAGlitch einfach noch einmal.")
         Settings.hideIcon = true
         if let statusItem { NSStatusBar.system.removeStatusItem(statusItem) }
         statusItem = nil

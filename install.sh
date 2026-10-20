@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installs VGAGlitch and VGAGlitch2 from the latest GitHub release:
+# Installs VGAGlitch from the latest GitHub release:
 #   curl -fsSL https://raw.githubusercontent.com/deaddls/newPresenter/main/install.sh | bash
 set -euo pipefail
 
@@ -26,8 +26,14 @@ install_app() {   # <name> <bundle id>
 }
 
 install_app VGAGlitch local.vgaglitch
-install_app VGAGlitch2 local.vgaglitch2
+
+# VGAGlitch2 was merged into VGAGlitch; the old copy would grab the same hotkey.
+if [ -e "$DEST/VGAGlitch2.app" ]; then
+    pkill -x VGAGlitch2 2>/dev/null || true
+    rm -rf "$DEST/VGAGlitch2.app"
+    echo "Altes VGAGlitch2 entfernt (steckt jetzt in VGAGlitch)."
+fi
 
 echo
-echo "Fertig: VGAGlitch und VGAGlitch2 liegen in $DEST."
-echo "Starten: open -a VGAGlitch2   (oder per Launchpad / Spotlight)"
+echo "Fertig: VGAGlitch liegt in $DEST."
+echo "Starten: open -a VGAGlitch   (oder per Launchpad / Spotlight)"

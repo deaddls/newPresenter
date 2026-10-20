@@ -1,4 +1,3 @@
-#if VGAGLITCH2
 import AppKit
 
 /// Borderless panel above the glitch overlay. It takes clicks without
@@ -230,4 +229,3 @@ final class PollController {
         timer = t
     }
 }
-#endif

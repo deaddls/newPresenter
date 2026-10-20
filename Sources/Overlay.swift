@@ -205,9 +205,7 @@ final class ScreenOverlay {
 final class GlitchController {
     private(set) var running = false
     private var overlays: [CGDirectDisplayID: ScreenOverlay] = [:]
-#if VGAGLITCH2
     private(set) lazy var poll = PollController { [unowned self] in self.targetScreens() }
-#endif
 
     init() {
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
@@ -220,17 +218,13 @@ final class GlitchController {
         guard !running else { return }
         running = true
         syncScreens()
-#if VGAGLITCH2
         poll.start()
-#endif
     }
 
     func stop() {
         guard running else { return }
         running = false
-#if VGAGLITCH2
         poll.stop()
-#endif
         overlays.values.forEach { $0.stop() }
         overlays.removeAll()
     }
